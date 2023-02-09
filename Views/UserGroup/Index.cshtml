@@ -1,0 +1,268 @@
+﻿@model IEnumerable<aspnetmvc_blog.Models.UserGroup>
+@{
+    ViewData["SelectedName"] = (ViewData["SelectedName"] != null) ? " for " + ViewData["SelectedName"] : "";
+    ViewData["Title"] = "Groups " + ViewData["SelectedName"];
+}
+<h2>
+    @ViewData["Title"]
+    <a asp-action="Create" asp-route-id="@ViewData["SelectedId"]" class="btn btn-primary">
+        <i class="fa fa-plus"></i>
+        Add Group
+    </a>
+</h2>
+<table id="UserGroupsDataTables" class="cell-border compact stripe">
+    <thead>
+        <tr>
+            <th><!-- ID --></th>
+            <th>User</th>
+            <th>Group</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+</table>
+@section scripts {
+    <script language="JavaScript" type="text/javascript">
+        var DataTablesVar;
+        $(document).ready(function () {
+            var connectionid = '@Html.Raw(Json.Serialize(ViewData["SelectedId"]))'.replace(/"/g, "");
+            DataTablesVar = $('#UserGroupsDataTables').DataTable({
+                "stateSave": true,
+                "searchDelay": 1000,
+                "rowId": 'userGroupId',
+                "deferRender": true,
+                "processing": true,
+                "serverSide": true,
+                "ordering": true,
+                "language": dataTablesSettings,
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [1, 2, 3],
+                        "orderable": false,
+                    }
+                ],
+                "columns": [
+                    {
+                        "data": "userGroupId"
+                    },
+                    {
+                        "name": "User.Username",
+                        "data": null,
+                        render: function (data, type, row) {
+                            var returnstring = data.user.userName;
+                            if (data.user.userStatus == false) {
+                                returnstring = returnstring + '<span class="badge text-bg-warning">User Disabled</span>'
+                            }
+                            return returnstring;
+                        }
+                    },
+                    {
+                        "name": "Group.Groupname",
+                        "data": null,
+                        render: function (data, type, row) {
+                            var returnstring = data.group.groupDescription + ' <span class="badge text-bg-secondary">' + data.group.groupCode + '</span> ';
+                            if (data.group.groupStatus == false) {
+                                returnstring = returnstring + ' <span class="badge text-bg-warning">Group Disabled</span> ';
+                            }
+                            returnstring = returnstring + ' <span class="badge text-bg-secondary">' + data.userGroupOrder + '</span> ';
+                            returnstring = returnstring +
+                                " <a href='#' data-id='" + data.userGroupId + "' class='btn btn-primary' data-toggle='tooltip' title='Increase'><i class='fa-solid fa-arrow-up'></i></a> " +
+                                " <a href='#' data-id='" + data.userGroupId + "' class='btn btn-primary' data-toggle='tooltip' title='Decrease'><i class='fa-solid fa-arrow-down'></i></a> ";
+                            return returnstring;
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, row) {
+                            return "" +
+                                "<a href='/UserGroup/Edit?id=" + data.userGroupId + "&userid=" + connectionid + "' class='btn btn-primary' data-toggle='tooltip' title='Edit'><i class='fa fa-edit'></i></a> " +
+                                "<a href='#' data-id='" + data.userGroupId + "' class='btn btn-primary' data-toggle='tooltip' title='Details'><i class='fa fa-info-circle'></i></a> " +
+                                "<a href='#' data-id='" + data.userGroupId + "' data-value='" + data.group.groupDescription + "' class='btn btn-primary' data-toggle='tooltip' title='Delete'><i class='fa fa-ban'></i></a> ";
+                        }
+                    }
+                ],
+                "ajax": {
+                    "url": '/UserGroup/LoadDataTables/' + connectionid,
+                    "type": "post",
+                    "datatype": "json"
+                }
+            });
+            DataTablesVar
+                .on('draw', function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-bs-original-title="Increase"]').on('click', function () {
+                        $('[data-bs-original-title="Increase"]').tooltip('hide');
+                        var yungayydi = $(this).data("id");
+                        Swal.fire({
+                            title: 'Priority',
+                            html: 'Add Priority',
+                            icon: 'info',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            showLoaderOnConfirm: true,
+                            preConfirm: function () {
+                                return new Promise(function (resolve) {
+                                    $.ajax({
+                                        type: "post",
+                                        data: { id: yungayydi, },
+                                        url: "/UserGroup/AddPriority",
+                                        success: function (data) {
+                                            return resolve(data);
+                                        },
+                                        error: function (data) {
+                                            showError(data);
+                                            return resolve(data);
+                                        },
+                                    });
+                                });
+                            },
+                        }).then((result) => {
+                            if (result.value) {
+                                if (checkJSON(result.value) == 'string') {
+                                    displayError(result.value);
+                                }
+                                else {
+                                    Swal.fire({
+                                        title: 'Priority ',
+                                        html: 'Priority Changed',
+                                        icon: 'success',
+                                        confirmButtonText: 'Close'
+                                    });
+                                    DataTablesVar.ajax.reload(null, false);
+                                }
+                            }
+                        });
+                        $('[data-bs-original-title="Increase"]').tooltip('hide');
+                    });
+                    $('[data-bs-original-title="Decrease"]').on('click', function () {
+                        $('[data-bs-original-title="Decrease"]').tooltip('hide');
+                        var yungayydi = $(this).data("id");
+                        Swal.fire({
+                            title: 'Priority',
+                            html: 'Lower Priority',
+                            icon: 'info',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            showLoaderOnConfirm: true,
+                            preConfirm: function () {
+                                return new Promise(function (resolve) {
+                                    $.ajax({
+                                        type: "post",
+                                        data: { id: yungayydi, },
+                                        url: "/UserGroup/LowerPriority",
+                                        success: function (data) {
+                                            return resolve(data);
+                                        },
+                                        error: function (data) {
+                                            showError(data);
+                                            return resolve(data);
+                                        },
+                                    });
+                                });
+                            },
+                        }).then((result) => {
+                            if (result.value) {
+                                if (checkJSON(result.value) == 'string') {
+                                    displayError(result.value);
+                                }
+                                else {
+                                    Swal.fire({
+                                        title: 'Priority ',
+                                        html: 'Priority Changed',
+                                        icon: 'success',
+                                        confirmButtonText: 'Close'
+                                    });
+                                    DataTablesVar.ajax.reload(null, false);
+                                }
+                            }
+                        });
+                        $('[data-bs-original-title="Decrease"]').tooltip('hide');
+                    });
+                    $('[data-bs-original-title="Delete"]').on('click', function () {
+                        $('[data-bs-original-title="Delete"]').tooltip('hide');
+                        var yunglebel = $(this).data("value");
+                        var yungayydi = $(this).data("id");
+                        Swal.fire({
+                            title: 'Delete ',
+                            html: $(this).data("value"),
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            showLoaderOnConfirm: true,
+                            preConfirm: function () {
+                                return new Promise(function (resolve) {
+                                    $.ajax({
+                                        type: "post",
+                                        data: { id: yungayydi, },
+                                        url: "/UserGroup/Remove",
+                                        success: function (data) {
+                                            return resolve(data);
+                                        },
+                                        error: function (data) {
+                                            return resolve(data);
+                                        },
+                                    });
+                                });
+                            },
+                        }).then((result) => {
+                            if (result.value) {
+                                if (checkJSON(result.value) == 'string') {
+                                    displayError(result.value);
+                                }
+                                else {
+                                    Swal.fire({
+                                        title: 'Delete ',
+                                        html: yunglebel + ' is successfully deleted',
+                                        icon: 'success',
+                                        confirmButtonText: 'Close'
+                                    });
+                                    DataTablesVar.ajax.reload(null, false);
+                                }
+                            }
+                        });
+                        $('[data-bs-original-title="Delete"]').tooltip('hide');
+                    });
+                    $('[data-bs-original-title="Details"]').on('click', function () {
+                        $('[data-bs-original-title="Details"]').tooltip('hide');
+                        $.ajax({
+                            data: {
+                                id: $(this).data("id")
+                            },
+                            type: "get",
+                            url: "/UserGroup/GetInfoJSON",
+                            success: function (data) {
+                                if (checkJSON(data) == 'string') {
+                                    displayError(data);
+                                }
+                                else {
+                                    var disp = "<table class='table table-sm' style='max-width:29rem;'>";
+                                    for (var key in data) {
+                                        if (data.hasOwnProperty(key)) {
+                                            if (key != "user" && key != "group") {
+                                                disp = disp + '<tr><th>' + key + '</th><td>' + data[key] + '</td></tr>';
+                                            }
+                                        }
+                                    }
+                                    disp = disp + '</table>'
+                                    Swal.fire({
+                                        title: 'Details ',
+                                        html: disp,
+                                        icon: 'info',
+                                        confirmButtonText: 'Close',
+                                    });
+                                }
+                            },
+                        });
+                        $('[data-bs-original-title="Details"]').tooltip('hide');
+                    });
+                });
+        });
+    </script>
+}

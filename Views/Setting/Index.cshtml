@@ -1,0 +1,101 @@
+﻿@model IEnumerable<aspnetmvc_blog.Models.AppSetting>
+@{
+    ViewData["Title"] = "Setting";
+}
+<h2>
+    @ViewData["Title"]
+</h2>
+<table id="SettingsDataTables" class="cell-border compact stripe">
+    <thead>
+        <tr>
+            <th><!-- ID --></th>
+            <th>Code</th>
+            <th>Value</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+</table>
+@section scripts {
+    <script language="JavaScript" type="text/javascript">
+        var DataTablesVar;
+        $(document).ready(function () {
+            DataTablesVar = $('#SettingsDataTables').DataTable({
+                "searchDelay": 1000,
+                "processing": true,
+                "serverSide": true,
+                "ordering": true,
+                "language": dataTablesSettings,
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [3],
+                        "orderable": false,
+                    }
+                ],
+                "columns": [
+                    {
+                        "data": "appSettingId"
+                    },
+                    {
+                        "name": "AppSettingCode",
+                        "data": "appSettingCode"
+                    },
+                    {
+                        "name": "AppSettingValue",
+                        "data": "appSettingValue"
+                    },
+                    {
+                        "data": null, render: function (data, type, row) {
+                            return "" +
+                                "<a href='/Setting/Edit/" + row.appSettingId + "' class='btn btn-primary' data-toggle='tooltip' title='Edit'><i class='fa fa-edit'></i></a> " +
+                                "<a href='#' data-id='" + data.appSettingId + "' class='btn btn-primary' data-toggle='tooltip' title='Details'><i class='fa fa-info-circle'></i></a> ";;
+                        }
+                    }
+                ],
+                "ajax": {
+                    "url": "/Setting/LoadDataTables",
+                    "type": "post",
+                    "datatype": "json"
+                }
+            });
+            DataTablesVar.on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-bs-original-title="Details"]').on('click', function () {
+                    $('[data-bs-original-title="Details"]').tooltip('hide');
+                    $.ajax({
+                        data: {
+                            id: $(this).data("id")
+                        },
+                        type: "get",
+                        url: "/Setting/GetInfoJSON",
+                        success: function (data) {
+                            if (checkJSON(data) == 'string') {
+                                displayError(data);
+                            }
+                            else {
+                                var disp = "<table class='table table-sm' style='max-width:29rem;'>";
+                                for (var key in data) {
+                                    if (data.hasOwnProperty(key)) {
+                                        disp = disp + '<tr><th>' + key + '</th><td>' + data[key] + '</td></tr>';
+                                    }
+                                }
+                                disp = disp + '</table>'
+                                Swal.fire({
+                                    title: 'Details ',
+                                    html: disp,
+                                    icon: 'info',
+                                    confirmButtonText: 'Close',
+                                });
+                            }
+                        },
+                    });
+                    $('[data-bs-original-title="Details"]').tooltip('hide');
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,223 @@
+﻿@model IEnumerable<aspnetmvc_blog.Models.User>
+@{
+    ViewData["Title"] = "Users";
+}
+<h2>
+    @ViewData["Title"]
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fa fa-plus"></i>
+        New User
+    </a>
+    <a id="ResetPassword" href='#' class='btn btn-danger' data-toggle='tooltip' title='Reset'>
+        Reset All Password
+    </a>
+</h2>
+<table id="UsersDataTables" class="cell-border compact stripe">
+    <thead>
+        <tr>
+            <th><!-- ID --></th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Groups</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+</table>
+@section scripts {
+    <script language="JavaScript" type="text/javascript">
+        var DataTablesVar;
+        $(document).ready(function () {
+            DataTablesVar = $('#UsersDataTables').DataTable({
+                "stateSave": true,
+                "searchDelay": 1000,
+                "rowId": 'userId',
+                "deferRender": true,
+                "processing": true,
+                "serverSide": true,
+                "ordering": true,
+                "language": dataTablesSettings,
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "orderable": false,
+                    },
+                    {
+                        "targets": [3,4,5],
+                        "orderable": false,
+                    }
+                ],
+                "columns": [
+                    {
+                        "data": "userId"
+                    },
+                    {
+                        "data": null,
+                        "name": "Username",
+                        render: function (data, type, row) {
+                            return data.userName;
+                        }
+                    },
+                    {
+                        "data": null,
+                        "name": "EmailAddress",
+                        render: function (data, type, row) {
+                            return data.emailAddress;
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, full) {
+                            var conting = 0;
+                            var returnstring = "";
+                            Object.keys(data.userRole).forEach(function (key) {
+                                conting = conting + 1;
+                                if (conting > 1) {
+                                    returnstring = returnstring + ' ';
+                                }
+                                returnstring = returnstring + '<span class="d-inline"><span class="badge text-bg-secondary">' + data.userRole[key].role.roleName + '</span></span>';
+                            });
+                            if (conting == 0) {
+                                returnstring = "-";
+                            }
+                            return returnstring;
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, full) {
+                            var conting = 0;
+                            var returnstring = "";
+                            Object.keys(data.userGroup).forEach(function (key) {
+                                conting = conting + 1;
+                                if (conting > 1) {
+                                    returnstring = returnstring + ' ';
+                                }
+                                returnstring = returnstring + '<span class="d-inline"><span class="badge text-bg-secondary" data-toggle="tooltip" title="' + data.userGroup[key].group.groupDescription + '">' + data.userGroup[key].group.groupCode + '</span></span>';
+                                if (data.userGroup[key].group.groupStatus == false) {
+                                    returnstring = returnstring + ' <span class="badge badge-danger">Disabled</span>'
+                                }
+                            });
+                            if (conting == 0) {
+                                returnstring = "-";
+                            }
+                            return returnstring;
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, row) {
+                            var returnstring = "";
+                            var disabler = "";
+                            if ('@(User.Identity.Name)' == data.userName) {
+                                disabler = "display:none;";
+                            }
+                            returnstring = returnstring +
+                                "<a href='/UserRole/Index/" + data.userId + "' class='btn btn-primary' data-toggle='tooltip' title='Roles'><i class='fa-regular fa-id-badge'></i></a> " +
+                                "<a href='/UserGroup/Index/" + data.userId + "' class='btn btn-primary' data-toggle='tooltip' title='Groups'><i class='fa-solid fa-people-group'></i></a> " +
+                                "<a href='/UserModule/Index/" + data.userId + "' class='btn btn-primary' data-toggle='tooltip' title='Access'><i class='fas fa-key'></i></a> " +
+                                "<a href='/User/Edit/" + data.userId + "' class='btn btn-primary' style='" + disabler + "' data-toggle='tooltip' title='Edit'><i class='fa fa-edit'></i></a> " +
+                                "<a href='#' data-id='" + data.userId + "' class='btn btn-primary' data-toggle='tooltip' title='Details'><i class='fa fa-info-circle'></i></a> " +
+                                "<a href='#' data-id='" + data.userId + "' data-value='" + data.userName + "' class='btn btn-primary' style='" + disabler + "' data-toggle='tooltip' title='Delete'><i class='fa fa-ban'></i></a> ";
+                            return returnstring;
+                        }
+                    }
+                ],
+                "ajax": {
+                    "url": "/User/LoadDataTables",
+                    "type": "post",
+                    "datatype": "json"
+                }
+            });
+            DataTablesVar.on('draw', function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-bs-original-title="Delete"]').on('click', function () {
+                        $('[data-bs-original-title="Delete"]').tooltip('hide');
+                        var yunglebel = $(this).data("value");
+                        var yungayydi = $(this).data("id");
+                        Swal.fire({
+                            title: 'Delete ',
+                            html: $(this).data("value"),
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            showLoaderOnConfirm: true,
+                            preConfirm: function () {
+                                return new Promise(function (resolve) {
+                                    $.ajax({
+                                        type: "post",
+                                        data: { id: yungayydi, },
+                                        url: "/User/Disable", 
+                                        success: function (data) {
+                                            return resolve(data);
+                                        },
+                                        error: function (data) {
+                                            return resolve(data);
+                                        },
+                                    });
+                                });
+                            },
+                        }).then((result) => {
+                            if (result.value) {
+                                if (checkJSON(result.value) == 'string') {
+                                    displayError(result.value);
+                                }
+                                else {
+                                    Swal.fire({
+                                        title: 'Delete ',
+                                        html: yunglebel + ' is successfully deleted',
+                                        icon: 'success',
+                                        confirmButtonText: 'Close'
+                                    });
+                                    DataTablesVar.ajax.reload(null, false);
+                                }
+                            }
+                        });
+                        $('[data-bs-original-title="Delete"]').tooltip('hide');
+                    });
+                    $('[data-bs-original-title="Details"]').on('click', function () {
+                        $('[data-bs-original-title="Details"]').tooltip('hide');
+                        $.ajax({
+                            data: {
+                                id: $(this).data("id")
+                            },
+                            type: "get",
+                            url: "/User/GetInfoJSON",
+                            success: function (data) {
+                                if (checkJSON(data) == 'string') {
+                                    displayError(data);
+                                }
+                                else {
+                                    var disp = "<table class='table table-sm' style='max-width:29rem;'>";
+                                    for (var key in data) {
+                                        if (data.hasOwnProperty(key)) {
+                                            if (
+                                                key !== "password" &&
+                                                key !== "userRole" &&
+                                                key !== "userGroup" &&
+                                                key !== "userModule" &&
+                                                key !== "userQuestion" &&
+                                                key !== "record"
+                                            ) {  
+                                                disp = disp + '<tr><th>' + key + '</th><td>' + data[key] + '</td></tr>';
+                                            }
+                                        }
+                                    }
+                                    disp = disp + '</table>'
+                                    Swal.fire({
+                                        title: 'Details ',
+                                        html: disp,
+                                        icon: 'info',
+                                        confirmButtonText: 'Close',
+                                    });
+                                }
+                            }
+                        });
+                        $('[data-bs-original-title="Details"]').tooltip('hide');
+                    });
+                });
+        });
+    </script>
+}

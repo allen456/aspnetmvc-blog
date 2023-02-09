@@ -1,0 +1,32 @@
+﻿@model aspnetmvc_blog.Models.AppSetting
+@{
+    ViewData["Title"] = "Edit";
+}
+<form asp-action="Edit">
+    <h2>
+        @ViewData["Title"]
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="AppSettingId" />
+            <div class="form-group">
+                <label asp-for="AppSettingCode" class="control-label"></label>
+                <input asp-for="AppSettingCode" readonly class="form-control" />
+                <span asp-validation-for="AppSettingCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppSettingValue" class="control-label"></label>
+                <input asp-for="AppSettingValue" class="form-control" />
+                <span asp-validation-for="AppSettingValue" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

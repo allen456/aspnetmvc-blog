@@ -1,0 +1,167 @@
+﻿@model IEnumerable<aspnetmvc_blog.Models.UserGrant>
+@{
+    ViewData["SelectedName"] = (ViewData["SelectedName"] != null) ? " for " + ViewData["SelectedName"] : "";
+    ViewData["Title"] = "Grant " + ViewData["SelectedName"];
+}
+<h2>@ViewData["Title"]
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fa fa-plus"></i>
+        Add User
+    </a>
+</h2>
+<table id="UserGrantsDataTables" class="cell-border compact stripe">
+    <thead>
+        <tr>
+            <th><!-- ID --></th>
+            <th>User</th>
+            <th>Granted User</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+</table>
+@section scripts {
+    <script language="JavaScript" type="text/javascript">
+        var DataTablesVar;
+        $(document).ready(function () {
+            DataTablesVar = $('#UserGrantsDataTables').DataTable({
+                "stateSave": true,
+                "searchDelay": 1000,
+                "rowId": 'userGrantId',
+                "deferRender": true,
+                "processing": true,
+                "serverSide": true,
+                "ordering": true,
+                "language": dataTablesSettings,
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [1,2,3],
+                        "orderable": false,
+                    }
+                ],
+                "columns": [
+                    {
+                        "data": "userGrantId"
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, row) {
+                            return data.sourceUser.userName;
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, row) {
+                            return data.targetUser.userName;
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, row) {
+                            var returnstring = "";
+                            returnstring = returnstring +
+                                "<a href='/UserGrant/Edit/" + data.userGrantId + "' class='btn btn-primary' data-toggle='tooltip' title='Edit'><i class='fa fa-edit'></i></a> " +
+                                "<a href='#' data-id='" + data.userGrantId + "' class='btn btn-primary' data-toggle='tooltip' title='Details'><i class='fa fa-info-circle'></i></a> " +
+                                "<a href='#' data-id='" + data.userGrantId + "' data-value='Remove " + data.targetUser.userName + "' class='btn btn-secondary' data-toggle='tooltip' title='Delete'><i class='fa fa-ban'></i></a> ";
+                            return returnstring;
+                        }
+                    }
+                ],
+                "ajax": {
+                    "url": '/UserGrant/LoadDataTables',
+                    "type": "post",
+                    "datatype": "json"
+                }
+            });
+            DataTablesVar
+                .on('draw', function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-bs-original-title="Delete"]').on('click', function () {
+                        $('[data-bs-original-title="Delete"]').tooltip('hide');
+                        var yunglebel = $(this).data("value");
+                        var yungayydi = $(this).data("id");
+                        Swal.fire({
+                            title: 'Delete ',
+                            html: $(this).data("value"),
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            showLoaderOnConfirm: true,
+                            preConfirm: function () {
+                                return new Promise(function (resolve) {
+                                    $.ajax({
+                                        type: "post",
+                                        data: { id: yungayydi, },
+                                        url: "/UserGrant/Remove", 
+                                        success: function (data) {
+                                            return resolve(data);
+                                        },
+                                        error: function (data) {
+                                            return resolve(data);
+                                        },
+                                    });
+                                });
+                            },
+                        }).then((result) => {
+                            if (result.value) {
+                                if (checkJSON(result.value) == 'string') {
+                                    displayError(result.value);
+                                }
+                                else {
+                                    Swal.fire({
+                                        title: 'Delete ',
+                                        html: yunglebel + ' is successfully deleted',
+                                        icon: 'success',
+                                       
+                                        confirmButtonText: 'Close'
+                                    });
+                                    DataTablesVar.ajax.reload(null, false);
+                                }
+                            }
+                        });
+                        $('[data-bs-original-title="Delete"]').tooltip('hide');
+                    });
+                    $('[data-bs-original-title="Details"]').on('click', function () {
+                        $('[data-bs-original-title="Details"]').tooltip('hide');
+                        $.ajax({
+                            data: {
+                                id: $(this).data("id")
+                            },
+                            type: "get",
+                            url: "/UserGrant/GetInfoJSON",
+                            success: function (data) {
+                                if (checkJSON(data) == 'string') {
+                                    displayError(data);
+                                }
+                                else {
+                                    var disp = "<table class='table table-sm' style='max-width:29rem;'>";
+                                    for (var key in data) {
+                                        if (data.hasOwnProperty(key)) {
+                                            if (key != "user" && key != "group") {
+                                                disp = disp + '<tr><th>' + key + '</th><td>' + data[key] + '</td></tr>';
+                                            }
+                                        }
+                                    }
+                                    disp = disp + '</table>'
+                                    Swal.fire({
+                                        title: 'Details ',
+                                        html: disp,
+                                        icon: 'info',
+                                       
+                                        confirmButtonText: 'Close',
+                                    });
+                                }
+                            },
+                        });
+                        $('[data-bs-original-title="Details"]').tooltip('hide');
+                    });
+                    
+                });
+        });
+    </script>
+}

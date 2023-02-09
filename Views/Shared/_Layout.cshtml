@@ -3,46 +3,86 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - aspnetmvc_blog</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] - My Blog</title>
+    <link rel="icon" href="~/favicon.ico" />
+    <!--bootstrap-->
+    <link rel="stylesheet" href="~/lib/twitter-bootstrap/css/bootstrap.min.css" asp-append-version="true" />
+    <!--datatables-->
+    <link rel="stylesheet" href="~/lib/datatables/css/jquery.dataTables.min.css" asp-append-version="true" />
+    <!--fontawesome-->
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" asp-append-version="true" />
+    <!--select2-->
+    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" asp-append-version="true" />
+    <!--css-->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/aspnetmvc_blog.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">aspnetmvc_blog</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+    <div class="container">
+        <header class="blog-header lh-1 py-3">
+            <div class="row flex-nowrap justify-content-between align-items-center">
+                <div class="col-4 pt-1" id="navbar1menu">
+                    <!--menu here-->
+                </div>
+                <div class="col-4 text-center">
+                    <a class="blog-header-logo text-dark" asp-controller="Home" asp-action="Index">My Blog</a>
+                </div>
+                <div class="col-4 d-flex justify-content-end align-items-center">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a class="link-secondary" asp-controller="Account" asp-action="Index"><i class="fa-solid fa-user mx-3"></i></a>
+                        <a class="btn btn-sm btn-outline-secondary" asp-controller="Account" asp-action="Logout">Logout</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-sm btn-outline-secondary" asp-controller="Account" asp-action="Login">Login</a>
+                    }
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        </header>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <div class="nav-scroller py-1 mb-2">
+                <nav class="nav d-flex justify-content-between">
+                    <a asp-controller="blog" asp-action="category" asp-route-id="World">World</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Local">Local</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Technology">Technology</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Design">Design</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Culture">Culture</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Business">Business</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Politics">Politics</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Opinion">Opinion</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Science">Science</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Health">Health</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Style">Style</a>
+                    <a asp-controller="blog" asp-action="category" asp-route-id="Travel">Travel</a>
+                </nav>
+            </div>
+        }
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - aspnetmvc_blog - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
+    <footer class="blog-footer">
+        <p>Blog made in ASP.net MVC</p>
+        <p>
+            <span id="wsconnectionUrl"></span>
+            <span id="wsconnidlabel"></span>
+            <span id="wsstateLabel"></span>
+        </p>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!--jquery-->
+    <script src="~/lib/jquery/jquery.min.js" asp-append-version="true"></script>
+    <!--bootstrap-->
+    <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <!--datatables-->
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js" asp-append-version="true"></script>
+    <!--sweetalert2-->
+    <script src="~/lib/limonte-sweetalert2/sweetalert2.all.min.js" asp-append-version="true"></script>
+    <!--select2-->
+    <script src="~/lib/select2/js/select2.full.min.js" asp-append-version="true"></script>
+    <!--remark-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/2.0.1/remarkable.min.js" asp-append-version="true"></script>
+    <!--js-->
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

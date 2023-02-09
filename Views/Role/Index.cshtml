@@ -1,0 +1,182 @@
+﻿@model IEnumerable<aspnetmvc_blog.Models.Role>
+@{
+    ViewData["Title"] = "Roles";
+}
+<h2>
+    @ViewData["Title"]
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fa fa-plus"></i>
+        New Role
+    </a>
+</h2>
+<table id="RolesDataTables" class="cell-border compact stripe">
+    <thead>
+        <tr>
+            <th><!-- ID --></th>
+            <th>Role</th>
+            <th>Accounts</th>
+            <th>Default Page</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+</table>
+@section scripts {
+    <script language="JavaScript" type="text/javascript">
+        var DataTablesVar;
+        $(document).ready(function () {
+            DataTablesVar = $('#RolesDataTables').DataTable({
+                "stateSave": true,
+                "searchDelay": 1000,
+                "rowId": 'roleId',
+                "deferRender": true,
+                "processing": true,
+                "serverSide": true,
+                "ordering": true,
+                "language": dataTablesSettings,
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [2, 4],
+                        "orderable": false
+                    }
+                ],
+                "columns": [
+                    {
+                        "data": "roleId"
+                    },
+                    {
+                        "name": "RoleName",
+                        "data": null,
+                        render: function (data, type, row) {
+                            var returnstring = data.roleName;
+                            if (data.administratorFlag) {
+                                returnstring = returnstring + ' <span class="badge text-bg-secondary">Administrator</span>';
+                            }
+                            if (data.registerFlag) {
+                                returnstring = returnstring + ' <span class="badge text-bg-warning">Register</span>';
+                            }
+                            return returnstring;
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, full) {
+                            return Object.keys(data.userRole).length;
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, row) {
+                            var returnstring = data.defaultController + ' ' + data.defaultAction;
+                            return returnstring;
+                        }
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, row) {
+                            return "" +
+                                "<a href='/RoleModule/Index/" + data.roleId + "' class='btn btn-primary' data-toggle='tooltip' title='Access'><i class='fa-solid fa-key'></i></a> " +
+                                "<a href='/Role/Edit/" + data.roleId + "' class='btn btn-primary' data-toggle='tooltip' title='Edit'><i class='fa fa-edit'></i></a> " +
+                                "<a href='#' data-id='" + data.roleId + "' class='btn btn-primary' data-toggle='tooltip' title='Details'><i class='fa fa-info-circle'></i></a> " +
+                                "<a href='#' data-id='" + data.roleId + "' data-value='" + data.roleName + "' class='btn btn-primary' data-toggle='tooltip' title='Delete'><i class='fa fa-ban'></i></a> ";
+                        }
+                    }
+                ],
+                "ajax": {
+                    "url": "/Role/LoadDataTables",
+                    "type": "post",
+                    "datatype": "json"
+                }
+            });
+            DataTablesVar
+                .on('draw', function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-bs-original-title="Delete"]').on('click', function () {
+                        $('[data-bs-original-title="Delete"]').tooltip('hide');
+                        var yunglebel = $(this).data("value");
+                        var yungayydi = $(this).data("id");
+                        Swal.fire({
+                            title: 'Delete ',
+                            html: $(this).data("value"),
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            showLoaderOnConfirm: true,
+                            preConfirm: function () {
+                                return new Promise(function (resolve) {
+                                    $.ajax({
+                                        type: "post",
+                                        data: { id: yungayydi, },
+                                        url: "/Role/Disable",
+                                        success: function (data) {
+                                            return resolve(data);
+                                        },
+                                        error: function (data) {
+                                            return resolve(data);
+                                        },
+                                    });
+                                });
+                            },
+                        }).then((result) => {
+                            if (result.value) {
+                                if (checkJSON(result.value) == 'string') {
+                                    displayError(result.value);
+                                }
+                                else {
+                                    Swal.fire({
+                                        title: 'Delete ',
+                                        html: yunglebel + ' is successfully deleted',
+                                        icon: 'success',
+
+                                        confirmButtonText: 'Close'
+                                    });
+                                    DataTablesVar.ajax.reload(null, false);
+                                }
+                            }
+                        });
+                        $('[data-bs-original-title="Delete"]').tooltip('hide');
+                    });
+                    $('[data-bs-original-title="Details"]').on('click', function () {
+                        $('[data-bs-original-title="Details"]').tooltip('hide');
+                        $.ajax({
+                            data: {
+                                id: $(this).data("id")
+                            },
+                            type: "get",
+                            url: "/Role/GetInfoJSON",
+                            success: function (data) {
+                                if (checkJSON(data) == 'string') {
+                                    displayError(data);
+                                }
+                                else {
+                                    var disp = "<table class='table table-sm' style='max-width:29rem;'>";
+                                    for (var key in data) {
+                                        if (data.hasOwnProperty(key)) {
+                                            if (key != "userRole" && key != "roleModule") {  //
+                                                disp = disp + '<tr><th>' + key + '</th><td>' + data[key] + '</td></tr>';
+                                            }
+                                        }
+                                    }
+                                    disp = disp + '</table>'
+                                    Swal.fire({
+                                        title: 'Details ',
+                                        html: disp,
+                                        icon: 'info',
+
+                                        confirmButtonText: 'Close',
+                                    });
+                                }
+                            },
+                        });
+                        $('[data-bs-original-title="Details"]').tooltip('hide');
+                    });
+
+                });
+        });
+    </script>
+}

@@ -1,0 +1,59 @@
+﻿@model aspnetmvc_blog.Models.Module
+@{
+    ViewData["Title"] = "Edit";
+}
+<form asp-action="Edit">
+    <h2>@ViewData["Title"]
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" id="checkbox1" asp-for="ModuleVisibility" />
+                    <label class="form-check-label" for="checkbox1">
+                        @Html.DisplayNameFor(model => model.ModuleVisibility)
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" asp-for="ModuleId" />
+            <div class="form-group">
+                <label asp-for="ModuleName" class="control-label"></label>
+                <input asp-for="ModuleName" class="form-control" />
+                <span asp-validation-for="ModuleName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModuleController" class="control-label"></label>
+                <input asp-for="ModuleController" class="form-control" />
+                <span asp-validation-for="ModuleController" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModuleAction" class="control-label"></label>
+                <input asp-for="ModuleAction" class="form-control" />
+                <span asp-validation-for="ModuleAction" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModuleOrder" class="control-label"></label>
+                <input asp-for="ModuleOrder" class="form-control" />
+                <span asp-validation-for="ModuleOrder" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModuleIconClass" class="control-label"></label>
+                <input asp-for="ModuleIconClass" class="form-control" />
+                <span asp-validation-for="ModuleIconClass" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModuleTooltip" class="control-label"></label>
+                <input asp-for="ModuleTooltip" class="form-control" />
+                <span asp-validation-for="ModuleTooltip" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,35 @@
+﻿@model aspnetmvc_blog.Models.Views.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+<h2>Login</h2>
+<div class="row">
+    <div class="col-md-4">
+        @if ((bool)ViewData["DisplayError"])
+        {
+            <p class="alert alert-danger">
+                Login Failed.Please Try Again
+            </p>
+        }
+        <form asp-action="Login">
+            <p>
+                <input asp-for="UserName" class="form-control" placeholder="Username" required />
+            </p>
+            <p>
+                <input asp-for="Password" class="form-control" placeholder="Password" required />
+            </p>
+            <p>
+                <button type="submit" value="Login" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </p>
+        </form>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            localStorage.clear();
+        });
+    </script>
+}

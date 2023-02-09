@@ -1,0 +1,37 @@
+﻿@model aspnetmvc_blog.Models.UserGrant
+@{
+    ViewData["Title"] = "Edit User Grant";
+}
+<form asp-action="Edit">
+    <h2>@ViewData["Title"]
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UserGrantId" />
+            <div class="form-group">
+                <label asp-for="SourceId" class="control-label"></label>
+                <select asp-for="SourceId" class="form-control" asp-items="ViewBag.SourceId"></select>
+                <span asp-validation-for="SourceId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetId" class="control-label"></label>
+                <select asp-for="TargetId" class="form-control" asp-items="ViewBag.TargetId"></select>
+                <span asp-validation-for="TargetId" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script language="JavaScript" type="text/javascript">
+        $(document).ready(function () {
+            $('#TargetId').select2();
+            $('#SourceId').select2();
+        });
+    </script>
+}

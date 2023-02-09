@@ -1,0 +1,273 @@
+﻿@{
+    ViewData["Title"] = "My Account";
+}
+<h2>
+    @ViewData["Title"]
+    <a asp-action="Password" class="btn btn-secondary">Change Password</a>
+    <a asp-action="Logout" class="btn btn-primary">Logout</a>
+</h2>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="control-label">Username</label><br />
+            <span id="displayaccountusername" class="font-weight-bold"><span class="spinner-border" role="status"> <span class="sr-only">Loading...</span></span></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="control-label">Email Address</label><br />
+            <span id="displayaccountemail" class="font-weight-bold"><span class="spinner-border" role="status"> <span class="sr-only">Loading...</span> </span></span>
+        </div>
+    </div>
+</div>
+<h2>
+    role
+    <a href="#" onclick="removeLocalStorage();" class="btn btn-danger">
+        <i class="fas fa-eraser"></i>
+        Reset Menu
+    </a>
+</h2>
+<table id="UserRolesDataTables" class="table display">
+    <thead>
+        <tr>
+            <th><!-- ID --></th>
+            <th>Role</th>
+        </tr>
+    </thead>
+</table>
+<h2>group</h2>
+<table id="UserGroupsDataTables" class="table display">
+    <thead>
+        <tr>
+            <th><!-- ID --></th>
+            <th>Office</th>
+        </tr>
+    </thead>
+</table>
+<h2>custom access</h2>
+<table id="UserModulesDataTables" class="table display">
+    <thead>
+        <tr>
+            <th><!-- ID --></th>
+            <th>Module</th>
+            <th>Access</th>
+        </tr>
+    </thead>
+</table>
+<h2>
+    grants
+    <a asp-controller="UserGrants" class="btn btn-secondary">Authorization</a>
+</h2>
+<table id="UserGrantsDataTables" class="table display">
+    <thead>
+        <tr>
+            <th><!-- ID --></th>
+            <th>Granted User</th>
+        </tr>
+    </thead>
+</table>
+@section scripts {
+    <script language="JavaScript" type="text/javascript">
+        var DataTablesVar1;
+        var DataTablesVar2;
+        var DataTablesVar3;
+        var DataTablesVar4;
+        DataTablesVar1 = $('#UserGrantsDataTables').DataTable({
+            "stateSave": true,
+            "searchDelay": 1000,
+            "rowId": 'userGrantId',
+            "dom": 't',
+            "deferRender": true,
+            "processing": true,
+            "serverSide": true,
+            "ordering": true,
+            "paging": false,
+            "language": dataTablesSettings,
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [1],
+                    "orderable": false,
+                }
+            ],
+            "columns": [
+                {
+                    "data": "userGrantId"
+                },
+                {
+                    "data": null,
+                    render: function (data, type, row) {
+                        return data.targetUser.userName;
+                    }
+                }
+            ],
+            "ajax": {
+                "url": '/Account/LoadUserGrantDataTables',
+                "type": "POST",
+                "datatype": "json"
+            }
+        });
+        DataTablesVar2 = $('#UserGroupsDataTables').DataTable({
+            "stateSave": true,
+            "searchDelay": 1000,
+            "rowId": 'userGroupId',
+            "dom": 't',
+            "deferRender": true,
+            "processing": true,
+            "serverSide": true,
+            "ordering": true,
+            "paging": false,
+            "language": dataTablesSettings,
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [1],
+                    "orderable": false,
+                }
+            ],
+            "columns": [
+                {
+                    "data": "userGroupId"
+                },
+                {
+                    "data": null,
+                    render: function (data, type, row) {
+                        return '<span class="badge text-bg-secondary">' + data.group.groupCode + '</span>';
+                    }
+                }
+            ],
+            "ajax": {
+                "url": '/Account/LoadUserGroupDataTables',
+                "type": "POST",
+                "datatype": "json"
+            }
+        });
+        DataTablesVar3 = $('#UserModulesDataTables').DataTable({
+            "stateSave": true,
+            "searchDelay": 1000,
+            "rowId": 'userModuleId',
+            "dom": 't',
+            "deferRender": true,
+            "processing": true,
+            "serverSide": true,
+            "ordering": true,
+            "paging": false,
+            "language": dataTablesSettings,
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [1, 2],
+                    "orderable": false,
+                }
+            ],
+            "columns": [
+                {
+                    "data": "userModuleId"
+                },
+                {
+                    "data": null,
+                    render: function (data, type, row) {
+                        return data.module.moduleName + '<span class="badge text-bg-secondary">' + data.module.moduleController + '/' + data.module.moduleAction + '</span>';
+                    }
+                },
+                {
+                    "data": null, render: function (data, type, row) {
+                        if (data.userModuleAccess) {
+                            return 'True';
+                        }
+                        else {
+                            return 'False';
+                        }
+                    }
+                }
+            ],
+            "ajax": {
+                "url": '/Account/LoadUserModuleDataTables',
+                "type": "POST",
+                "datatype": "json"
+            }
+        });
+        DataTablesVar4 = $('#UserRolesDataTables').DataTable({
+            "stateSave": true,
+            "searchDelay": 1000,
+            "rowId": 'userRoleId',
+            "dom": 't',
+            "deferRender": true,
+            "processing": true,
+            "serverSide": true,
+            "ordering": true,
+            "paging": false,
+            "language": dataTablesSettings,
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [1],
+                    "orderable": false,
+                }
+            ],
+            "columns": [
+                {
+                    "data": "userRoleId"
+                },
+                {
+                    "data": null,
+                    render: function (data, type, row) {
+                        return data.role.roleName;
+                    }
+                }
+            ],
+            "ajax": {
+                "url": '/Account/LoadUserRoleDataTables',
+                "type": "POST",
+                "datatype": "json"
+            }
+        });
+        $(document).ready(function () {
+            getAccountIndexData();
+            localStorage.clear();
+        });
+        function getAccountIndexData() {
+            $.ajax({
+                data: {
+                    id: $(this).data("id")
+                },
+                type: "get",
+                url: "/Account/GetInfoJSON",
+                success: function (data) {
+                    if (checkJSON(data) == 'string') {
+                        displayError(data);
+                    }
+                    else {
+                        $('#displayaccountusername').html(data.userName);
+                        $('#displayaccountemail').html(data.emailAddress);
+                    }
+                }
+            });
+        }
+        function removeLocalStorage() {
+            localStorage.clear();
+            Swal.fire({
+                title: 'Menu Cache Deleted',
+                text: 'Navigate to other page to load the menu again.',
+                icon: 'success',
+                confirmButtonText: 'Close'
+            });
+        }
+    </script>
+}

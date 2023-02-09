@@ -1,0 +1,51 @@
+﻿@model aspnetmvc_blog.Models.Role
+@{
+    ViewData["Title"] = "Create";
+}
+<form asp-action="Create">
+    <h2>@ViewData["Title"]
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" id="checkbox1" asp-for="AdministratorFlag" />
+                    <label class="form-check-label" for="checkbox1">
+                        @Html.DisplayNameFor(model => model.AdministratorFlag)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" id="checkbox2" asp-for="RegisterFlag" />
+                    <label class="form-check-label" for="checkbox2">
+                        @Html.DisplayNameFor(model => model.RegisterFlag)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="RoleName" class="control-label"></label>
+                <input asp-for="RoleName" class="form-control" />
+                <span asp-validation-for="RoleName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DefaultController" class="control-label"></label>
+                <input asp-for="DefaultController" class="form-control" />
+                <span asp-validation-for="DefaultController" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DefaultAction" class="control-label"></label>
+                <input asp-for="DefaultAction" class="form-control" />
+                <span asp-validation-for="DefaultAction" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

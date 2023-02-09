@@ -1,0 +1,43 @@
+﻿@model aspnetmvc_blog.Models.UserGroup
+@{
+    ViewData["SelectedName"] = (ViewData["SelectedName"] != null) ? " for " + ViewData["SelectedName"] : "";
+    ViewData["Title"] = "Edit Groups " + ViewData["SelectedName"];
+}
+<form asp-action="Edit">
+    <h2>@ViewData["Title"]
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <a asp-action="Index" asp-route-id="@ViewData["SelectedId"]" class="btn btn-secondary">Back to List</a>
+    </h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UserGroupId" />
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GroupId" class="control-label"></label>
+                <select asp-for="GroupId" class="form-control" asp-items="ViewBag.GroupId"></select>
+                <span asp-validation-for="GroupId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserGroupOrder" class="control-label"></label>
+                <input asp-for="UserGroupOrder" class="form-control" required />
+                <span asp-validation-for="UserGroupOrder" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script language="JavaScript" type="text/javascript">
+        $(document).ready(function () {
+            $('#UserId').select2();
+            $('#GroupId').select2();
+        });
+    </script>
+}
