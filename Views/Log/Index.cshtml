@@ -1,0 +1,125 @@
+﻿@model IEnumerable<aspnetmvc_blog.Models.AppLog>
+@{
+    ViewData["Title"] = "Logs";
+}
+<h2>
+    @ViewData["Title"]
+</h2>
+<table id="LogsDataTables" class="cell-border compact stripe">
+    <thead>
+        <tr>
+            <th><!-- ID --></th>
+            <th>Date</th>
+            <th>User</th>
+            <th>Controller</th>
+            <th>Action</th>
+            <th>Query</th>
+            <th>Address</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+</table>
+@section scripts {
+    <script language="JavaScript" type="text/javascript">
+        var DataTablesVar;
+        $(document).ready(function () {
+            DataTablesVar = $('#LogsDataTables').DataTable({
+                "stateSave": true,
+                "searchDelay": 1000,
+                "rowId": 'appLogId',
+                "processing": true,
+                "serverSide": true,
+                "ordering": true,
+                "language": dataTablesSettings,
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [7],
+                        "orderable": false
+                    }
+                ],
+                "columns": [
+                    {
+                        "data": "appLogId"
+                    },
+                    {
+                        "name": "AppLogDate",
+                        "data": "appLogDate"
+                    },
+                    {
+                        "name": "AppLogUser",
+                        "data": "appLogUser"
+                    },
+                    {
+                        "name": "AppLogController",
+                        "data": "appLogController"
+                    },
+                    {
+                        "name": "AppLogAction",
+                        "data": "appLogAction"
+                    },
+                    {
+                        "name": "AppLogQuery",
+                        "data": "appLogQuery"
+                    },
+                    {
+                        "name": "AppLogAddress",
+                        "data": "appLogAddress"
+                    },
+                    {
+                        "data": null,
+                        render: function (data, type, row) {
+                            return "<a href='#' data-id='" + data.appLogId + "' class='btn btn-primary' data-toggle='tooltip' title='Details'><i class='fa fa-info-circle'></i></a> ";
+                        }
+                    }
+                ],
+                "ajax": {
+                    "url": "/Log/LoadDataTables",
+                    "type": "post",
+                    "datatype": "json"
+                }
+            });
+            DataTablesVar
+                .on('draw', function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-bs-original-title="Details"]').on('click', function () {
+                        $('[data-bs-original-title="Details"]').tooltip('hide');
+                        $.ajax({
+                            data: {
+                                id: $(this).data("id")
+                            },
+                            type: "get",
+                            url: "/Log/GetInfoJSON",
+                            success: function (data) {
+                                if (checkJSON(data) == 'string') {
+                                    displayError(data);
+                                }
+                                else {
+                                    var disp = "<table class='table table-sm' style='max-width:29rem;'>";
+                                    for (var key in data) {
+                                        if (data.hasOwnProperty(key)) {
+                                            if (key != "userRole" && key != "roleModule") {
+                                                disp = disp + '<tr><th>' + key + '</th><td>' + data[key] + '</td></tr>';
+                                            }
+                                        }
+                                    }
+                                    disp = disp + '</table>'
+                                    Swal.fire({
+                                        title: 'Details ',
+                                        html: disp,
+                                        icon: 'info',
+                                        confirmButtonText: 'Close',
+                                    });
+                                }
+                            },
+                        });
+                        $('[data-bs-original-title="Details"]').tooltip('hide');
+                    });
+                });
+        });
+    </script>
+}
