@@ -9,8 +9,8 @@ namespace aspnetmvc_blog.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid AppSettingId { get; set; }
-        public string AppSettingCode { get; set; }
-        public string AppSettingValue { get; set; } 
+        public string AppSettingCode { get; set; } = string.Empty;
+        public string AppSettingValue { get; set; }  = string.Empty;
     }
 }
  

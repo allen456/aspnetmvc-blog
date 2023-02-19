@@ -14,11 +14,11 @@ namespace aspnetmvc_blog.Models
 
         [Required]
         [DisplayName("Code")]
-        public string GroupCode { get; set; }
+        public string GroupCode { get; set; } = string.Empty;
          
         [Required]
         [DisplayName("Description")]
-        public string GroupDescription { get; set; }
+        public string GroupDescription { get; set; } = string.Empty;
 
         public ICollection<UserGroup> UserGroup { get; set; } = new List<UserGroup>();
     }

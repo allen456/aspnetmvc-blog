@@ -17,15 +17,15 @@ namespace aspnetmvc_blog.Models
 
         [Required]
         [DisplayName("Username")]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         [DisplayName("Password")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [Required]
         [DisplayName("Email Address")]
-        public string EmailAddress { get; set; }
+        public string EmailAddress { get; set; } = string.Empty;
 
         public ICollection<UserRole> UserRole { get; set; } = new List<UserRole>();
         public ICollection<UserGroup> UserGroup { get; set; } = new List<UserGroup>();

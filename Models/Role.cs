@@ -14,7 +14,7 @@ namespace aspnetmvc_blog.Models
 
         [Required]
         [DisplayName("Name")]
-        public string RoleName { get; set; }
+        public string RoleName { get; set; } = string.Empty;
 
         [Required]
         [DisplayName("Administrator")]
@@ -26,11 +26,11 @@ namespace aspnetmvc_blog.Models
 
         [Required]
         [DisplayName("Default action")]
-        public string DefaultAction { get; set; }
+        public string DefaultAction { get; set; } = string.Empty;
 
         [Required]
         [DisplayName("Default controller")]
-        public string DefaultController { get; set; }
+        public string DefaultController { get; set; } = string.Empty;
 
         public ICollection<UserRole> UserRole { get; set; } = new List<UserRole>();
         public ICollection<RoleModule> RoleModule { get; set; } = new List<RoleModule>();

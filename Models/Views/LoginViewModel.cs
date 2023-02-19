@@ -7,10 +7,10 @@ namespace aspnetmvc_blog.Models.Views
         [Required]
         [StringLength(100)]
         [Display(Name = "Username")]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
     }
 }

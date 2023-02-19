@@ -7,7 +7,7 @@ namespace aspnetmvc_blog.Models.Views
 {
     public class BlogDetailedViewModel
     {
-        public BlogDataViewModel BlogDisplay { get; set; }
-        public List<BlogDataCategoryViewModel> ArchiveList { get; set; }
+        public BlogDataViewModel BlogDisplay { get; set; } = new BlogDataViewModel();
+        public List<BlogDataCategoryViewModel> ArchiveList { get; set; } = new List<BlogDataCategoryViewModel>();
     }
 }

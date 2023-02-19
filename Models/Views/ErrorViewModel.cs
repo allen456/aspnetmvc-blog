@@ -4,7 +4,7 @@ namespace aspnetmvc_blog.Models.Views
     {
         public string? RequestId { get; set; }
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-        public string ErrorType { get; set; }
-        public string ReturnUrl { get; set; }
+        public string ErrorType { get; set; } = string.Empty;
+        public string ReturnUrl { get; set; } = string.Empty;
     }
 }

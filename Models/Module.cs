@@ -16,15 +16,15 @@ namespace aspnetmvc_blog.Models
 
         [Required]
         [DisplayName("Module Name")]
-        public string ModuleName { get; set; }
+        public string ModuleName { get; set; } = string.Empty;
 
         [Required]
         [DisplayName("Controller")]
-        public string ModuleController { get; set; }
+        public string ModuleController { get; set; } = string.Empty;
 
         [Required]
         [DisplayName("Action")]
-        public string ModuleAction { get; set; }
+        public string ModuleAction { get; set; } = string.Empty;
 
         [Required]
         [DisplayName("Menu")]
@@ -32,11 +32,11 @@ namespace aspnetmvc_blog.Models
 
         [Required]
         [DisplayName("Icon")]
-        public string ModuleIconClass { get; set; }
+        public string ModuleIconClass { get; set; } = string.Empty;
 
         [Required]
         [DisplayName("Tooltip Text")]
-        public string ModuleTooltip { get; set; }
+        public string ModuleTooltip { get; set; } = string.Empty;
 
         public ICollection<RoleModule> RoleModule { get; set; } = new List<RoleModule>();
         public ICollection<UserModule> UserModule { get; set; } = new List<UserModule>();

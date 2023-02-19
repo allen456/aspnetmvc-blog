@@ -9,6 +9,6 @@ namespace aspnetmvc_blog.Models.Views
     {
         public int year { get; set; }
         public int month { get; set; }
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
     }
 }
