@@ -69,7 +69,6 @@ namespace aspnetmvc_blog.Data
                     {
                         if (sock.Key.ToString() != _defaultname && routeOb.From.ToString() != _defaultname)
                         {
-                            // payload
                             WebSocketsViewModel _payload = new WebSocketsViewModel
                             {
                                 PayloadFrom = routeOb.From.ToString(),
@@ -78,7 +77,6 @@ namespace aspnetmvc_blog.Data
                                 PayloadDate = DateTime.Now
                             };
                             await sock.Value.SendAsync(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_payload)), WebSocketMessageType.Text, true, CancellationToken.None);
-                            // payload
                         }
                     }
                 }
@@ -95,7 +93,6 @@ namespace aspnetmvc_blog.Data
                         {
                             if (sock.Key.ToString() != _defaultname && routeOb.From.ToString() != _defaultname)
                             {
-                                // payload
                                 WebSocketsViewModel _payloadkungwalaproblema = new WebSocketsViewModel
                                 {
                                     PayloadFrom = routeOb.From.ToString(),
@@ -104,7 +101,6 @@ namespace aspnetmvc_blog.Data
                                     PayloadDate = DateTime.Now
                                 };
                                 await sock.Value.SendAsync(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_payloadkungwalaproblema)), WebSocketMessageType.Text, true, CancellationToken.None);
-                                // payload
                             }
                         }
                     }

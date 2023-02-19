@@ -10,7 +10,6 @@ namespace aspnetmvc_blog.Data
 
         public bool IsUserAuthorized(Guid? userId, string action, string controller)
         {
-            // check if module exists on database
             if (!_context.Modules.Where(w => w.ModuleAction == action && w.ModuleController == controller).ToList().Any())
             {
                 Module _data = new()
@@ -25,12 +24,8 @@ namespace aspnetmvc_blog.Data
                     ModuleIconClass = "fas fa-question-circle",
                     ModuleTooltip = "tooltip"
                 };
-                // --Inserting Module--
                 _context.Modules.Add(_data);
                 _context.Entry(_data).State = EntityState.Added;
-                // --Inserting Module--
-
-                // --Inserting Module to RoleModules--
                 foreach (Role item in _context.Roles.Where(w => w.RoleStatus == true).ToList())
                 {
                     Guid _ModuleId = _data.ModuleId;
@@ -54,36 +49,24 @@ namespace aspnetmvc_blog.Data
             {
                 return false;
             }
-
-            // check if user has no roles
             if (!_context.UserRoles.Where(w => w.UserId == userId).ToList().Any())
             {
                 return false;
             }
-
-            // get module id
-            Guid moduleID = _context.Modules.Where(w => w.ModuleAction == action && w.ModuleController == controller).ToList().FirstOrDefault().ModuleId;
-
-            // UserRight ovveride role permission
+            Guid moduleID = _context.Modules.FirstOrDefault(w => w.ModuleAction == action && w.ModuleController == controller).ModuleId;
             if (_context.UserModules.Where(w => w.UserId == userId && w.ModuleId == moduleID).ToList().Any())
             {
-                return _context.UserModules.Where(w => w.UserId == userId && w.ModuleId == moduleID).OrderByDescending(w => w.UserModuleOrder).ToList().FirstOrDefault()
+                return _context.UserModules.Where(w => w.UserId == userId && w.ModuleId == moduleID).OrderByDescending(w => w.UserModuleOrder).FirstOrDefault()
                     .UserModuleAccess;
             }
-
-            // if user has multiple role, loops until it returns true
             Guid roleId = Guid.NewGuid();
             foreach (UserRole item in _context.UserRoles.Where(w => w.UserId == userId).OrderByDescending(w => w.UserRoleOrder).ToList())
             {
                 roleId = item.RoleId;
-
-                // if role is a administrator account
                 if (_context.Roles.Where(w => w.RoleId == roleId).ToList().FirstOrDefault().AdministratorFlag)
                 {
                     return true;
                 }
-
-                // finds the true on role if allowed to access module
                 if (_context.RoleModules.Where(w => w.RoleId == roleId && w.ModuleId == moduleID).ToList().Any())
                 {
                     if (_context.RoleModules.Where(w => w.RoleId == roleId && w.ModuleId == moduleID).OrderByDescending(w => w.RoleModuleOrder).ToList().FirstOrDefault().RoleModuleAccess)
@@ -92,14 +75,10 @@ namespace aspnetmvc_blog.Data
                     }
                 }
             }
-
-            // return the role if allowed to access the module true or not
             if (_context.RoleModules.Where(w => w.RoleId == roleId && w.ModuleId == moduleID).ToList().Any())
             {
                 return _context.RoleModules.Where(w => w.RoleId == roleId && w.ModuleId == moduleID).OrderByDescending(w => w.RoleModuleOrder).ToList().FirstOrDefault().RoleModuleAccess;
             }
-
-            // if nothing returned then false
             return false;
         }
 

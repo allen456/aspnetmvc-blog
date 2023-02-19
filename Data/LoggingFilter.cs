@@ -19,7 +19,6 @@ namespace aspnetmvc_blog.Data
             string controllerName = context.RouteData.Values["controller"].ToString();
             string parameters = string.Empty;
             var userName = string.Empty;
-            // -- Get User
             if (context.HttpContext != null && context.HttpContext.User != null && context.HttpContext.User.Identity.IsAuthenticated)
             {
                 userName = context.HttpContext.User.Identity.Name;
@@ -32,7 +31,6 @@ namespace aspnetmvc_blog.Data
                     userName = threadPincipal.Identity.Name;
                 }
             }
-            // -- Get Parameters
             foreach (var _paramerters in context.ActionArguments)
             {
                 parameters += string.Format("{0}={1}&", _paramerters.Key, _paramerters.Value);

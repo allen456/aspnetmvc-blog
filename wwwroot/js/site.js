@@ -11,7 +11,6 @@
         });
         $("#navbar1menu").html(menustring);
     });
-    // websockets
     var xhrsocketurl = new XMLHttpRequest();
     xhrsocketurl.onreadystatechange = function () {
         if (xhrsocketurl.readyState === 4) {
@@ -28,7 +27,6 @@
     };
     xhrsocketurl.open('GET', '/Account/GetWebSocketURL');
     xhrsocketurl.send();
-    // websockets
 });
 displayMenu = function (callback) {
     if (localStorage.getItem('MenuList')) {
@@ -90,7 +88,6 @@ function displayError(htmlData) {
     });
 };
 function groupBy(list, keyGetter) {
-    // used on menu
     let map = new Map();
     list.forEach((item) => {
         let key = keyGetter(item);
@@ -168,7 +165,6 @@ function connectSocket(socketurl) {
     };
 }
 function isJson(str) {
-    // used on websockets
     try {
         JSON.parse(str);
     } catch (e) {
