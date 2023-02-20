@@ -15,7 +15,7 @@ namespace aspnetmvc_blog.Controllers
 
         public async Task<IActionResult> Archive(int year, int month)
         {
-            List<BlogDataViewModel> blogList = await _bloglib.getBlogList();
+            List<BlogDataViewModel> blogList = await _bloglib.GetBlogList();
             BlogArchiveViewModel blogDisplay = new()
             {
                 ArchiveName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month) + " " + year,
@@ -27,7 +27,7 @@ namespace aspnetmvc_blog.Controllers
 
         public async Task<IActionResult> Category(string id)
         {
-            List<BlogDataViewModel> blogList = await _bloglib.getBlogList();
+            List<BlogDataViewModel> blogList = await _bloglib.GetBlogList();
             BlogCategoryViewModel blogDisplay = new()
             {
                 CategoryName = id,
@@ -39,7 +39,7 @@ namespace aspnetmvc_blog.Controllers
 
         public async Task<IActionResult> Index(string id)
         {
-            List<BlogDataViewModel> blogList = await _bloglib.getBlogList();
+            List<BlogDataViewModel> blogList = await _bloglib.GetBlogList();
             BlogDetailedViewModel blogDisplay = new()
             {
                 BlogDisplay = blogList.First(w => w._id == id),
@@ -50,7 +50,7 @@ namespace aspnetmvc_blog.Controllers
 
         public async Task<IActionResult> List()
         {
-            List<BlogDataViewModel> blogList = await _bloglib.getBlogList();
+            List<BlogDataViewModel> blogList = await _bloglib.GetBlogList();
             BlogListViewModel blogDisplay = new()
             {
                 NewestBlog = blogList.OrderByDescending(q => q.BlogDate).ToList(),
@@ -72,7 +72,7 @@ namespace aspnetmvc_blog.Controllers
         [ServiceFilter(typeof(LoggingFilter))]
         public async Task<IActionResult> Create([Bind("Category,Feature,Image,Title,Subtitle,Content")] BlogDataViewModel data)
         {
-            List<BlogDataViewModel> blogList = await _bloglib.getBlogList();
+            List<BlogDataViewModel> blogList = await _bloglib.GetBlogList();
             return View(data);
         }
 
@@ -89,7 +89,7 @@ namespace aspnetmvc_blog.Controllers
         [ServiceFilter(typeof(LoggingFilter))]
         public async Task<IActionResult> Edit(string id, [Bind("Category,Feature,Image,Title,Subtitle,Content")] BlogDataViewModel data)
         {
-            List<BlogDataViewModel> blogList = await _bloglib.getBlogList();
+            List<BlogDataViewModel> blogList = await _bloglib.GetBlogList();
             return View(data);
         }
     }

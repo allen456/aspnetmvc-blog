@@ -1,6 +1,4 @@
-﻿using aspnetmvc_blog.Models;
-using aspnetmvc_blog.Models.Views;
-using Microsoft.EntityFrameworkCore;
+﻿using aspnetmvc_blog.Models.Views;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -11,7 +9,7 @@ namespace aspnetmvc_blog.Data
         public LibraryBlog(IConfiguration config) { _config = config; }
         private readonly IConfiguration _config;
 
-        public async Task<List<BlogDataViewModel>> getBlogList()
+        public async Task<List<BlogDataViewModel>> GetBlogList()
         {
             List<BlogDataViewModel> blogList = new();
             using (var httpClient = new HttpClient())
@@ -23,7 +21,7 @@ namespace aspnetmvc_blog.Data
             return blogList;
         }
 
-        public async Task<BlogDataViewModel> getBlogData(string id)
+        public async Task<BlogDataViewModel> GetBlogData(string id)
         {
             BlogDataViewModel blogData = new();
             using (var httpClient = new HttpClient())
@@ -35,7 +33,7 @@ namespace aspnetmvc_blog.Data
             return blogData;
         }
 
-        public async Task<BlogDataViewModel> sendBlogData(BlogDataPostViewModel newBlogData)
+        public async Task<BlogDataViewModel> SendBlogData(BlogDataPostViewModel newBlogData)
         {
             BlogDataViewModel blogData = new();
             using (var httpClient = new HttpClient())
@@ -48,7 +46,7 @@ namespace aspnetmvc_blog.Data
             return blogData;
         }
 
-        public async Task<BlogDataViewModel> updateBlogData(string id, BlogDataPostViewModel newBlogData)
+        public async Task<BlogDataViewModel> UpdateBlogData(string id, BlogDataPostViewModel newBlogData)
         {
             BlogDataViewModel blogData = new();
             using (var httpClient = new HttpClient())

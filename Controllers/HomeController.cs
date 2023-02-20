@@ -17,7 +17,7 @@ namespace aspnetmvc_blog.Controllers
 
         public async Task<IActionResult> IndexAsync()
         {
-            List<BlogDataViewModel> blogList = await _bloglib.getBlogList();
+            List<BlogDataViewModel> blogList = await _bloglib.GetBlogList();
             BlogHomeViewModel blogDisplay = new();
             var topFeatured = blogList.Where(w => w.Feature).OrderByDescending(q => q.BlogDate).First();
             var featured = blogList.Where(w => w.Feature && w._id != topFeatured._id).OrderByDescending(q => q.BlogDate).Take(_featurecount).ToList();

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase(databaseName: "Blog"));
 builder.Services.AddControllersWithViews(options => options.MaxModelValidationErrors = 50).AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => { options.LoginPath = "/Account/Login/"; });
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => { options.LoginPath = "/account/login/"; });
 builder.Services.AddScoped<AuthenticationFilter>();
 builder.Services.AddScoped<AuthenticationFilterAPI>();
 builder.Services.AddScoped<LoggingFilter>();
@@ -25,7 +25,7 @@ using (var scope = app.Services.CreateScope())
 }
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/home/error");
     app.UseForwardedHeaders();
     app.UseHsts();
 }
@@ -42,6 +42,6 @@ app.UseWebSocketServer();
 app.UseCookiePolicy();
 app.UseRouting();
 app.UseAuthorization();
-app.UseStatusCodePagesWithRedirects("/Home/Error?type={0}");
-app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseStatusCodePagesWithRedirects("/home/error?type={0}");
+app.MapControllerRoute(name: "default", pattern: "{controller=home}/{action=index}/{id?}");
 app.Run();

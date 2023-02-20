@@ -15,11 +15,11 @@
         <div class="col-md-6">
             <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                 <div class="col p-4 d-flex flex-column position-static">
-                    <strong class="d-inline-block mb-2 text-primary">@fblog.Category</strong>
                     <h3 class="mb-0">@fblog.Title</h3>
+                    <strong class="d-inline-block mb-2 text-primary">@fblog.Category</strong>
                     <div class="mb-1 text-muted">@fblog.BlogDate</div>
                     <p class="card-text mb-auto">@fblog.Subtitle</p>
-                    <a asp-controller="blog" asp-action="index" asp-route-id="@fblog._id" class="stretched-link">Continue reading</a>
+                    <a asp-controller="blog" asp-action="index" asp-route-id="@fblog._id">Continue reading</a>
                 </div>
                 <div class="col-auto d-none d-lg-block">
                     <img src="@fblog.Image" class="img-fluid" width="200" height="250" alt="thumbnail">
@@ -37,10 +37,12 @@
         {
             <article class="blog-post">
                 <h2 class="blog-post-title mb-1">@nblog.Title</h2>
+                <strong class="d-inline-block mb-2 text-primary">@nblog.Category</strong>
                 <p class="blog-post-meta">@nblog.BlogDate</p>
                 @nblog.Subtitle
                 <hr>
-                @nblog.Content
+                <p>@nblog.Content</p>
+                <a asp-controller="blog" asp-action="index" asp-route-id="@nblog._id">Continue reading</a>
             </article>
         }
         <nav class="blog-pagination" aria-label="Pagination">

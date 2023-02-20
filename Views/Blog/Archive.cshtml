@@ -2,10 +2,10 @@
 @{
     ViewData["Title"] = "Archive " + Model.ArchiveName;
 }
-<div class="row g-5">
-    <div class="col-md-8">
+<div class="row g-5 mt-1">
+    <div class="col-md-8 mt-0">
         <h3 class="pb-4 mb-4 fst-italic border-bottom">
-            @Model.ArchiveName
+            @Model.ArchiveName Archive
         </h3>
         @foreach (var nblog in Model.NewestBlog)
         {
@@ -22,8 +22,7 @@
             <a class="btn btn-outline-primary rounded-pill" asp-controller="blog" asp-action="list">More</a>
         </nav>
     </div>
-
-    <div class="col-md-4">
+    <div class="col-md-4 mt-0">
         <div class="position-sticky" style="top: 2rem;">
             <div class="p-4 mb-3 bg-light rounded">
                 <h4 class="fst-italic">About</h4>

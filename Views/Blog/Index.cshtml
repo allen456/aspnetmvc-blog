@@ -2,11 +2,11 @@
 @{
     ViewData["Title"] = Model.BlogDisplay.Title;
 }
-<div class="row g-5">
-    <div class="col-md-8">
+<div class="row g-5 mt-1">
+    <div class="col-md-8 mt-0">
         <article class="blog-post">
-            <strong class="d-inline-block mb-2 text-primary">@Model.BlogDisplay.Category</strong>
             <h2 class="blog-post-title mb-1">@Model.BlogDisplay.Title</h2>
+            <strong class="d-inline-block mb-2 text-primary">@Model.BlogDisplay.Category</strong>
             <p class="blog-post-meta">@Model.BlogDisplay.BlogDate</p>
             @Model.BlogDisplay.Subtitle
             <hr>
@@ -14,7 +14,7 @@
             <p>@Model.BlogDisplay.Content</p>
         </article>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 mt-0">
         <div class="position-sticky" style="top: 2rem;">
             <div class="p-4 mb-3 bg-light rounded">
                 <h4 class="fst-italic">About</h4>

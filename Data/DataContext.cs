@@ -1,4 +1,5 @@
 ﻿using aspnetmvc_blog.Models;
+using aspnetmvc_blog.Models.Views;
 using Microsoft.EntityFrameworkCore;
 
 namespace aspnetmvc_blog.Data

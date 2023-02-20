@@ -6,7 +6,7 @@
         menustring += '<a class="btn btn-sm btn-outline-secondary" href="/Home/Index">Home</a>';
         menuGrouped.forEach(function (menuElement, susi) {
             menuElement.forEach(function (menuChild) {
-                menustring += '<a class="link-secondary" href="/' + menuChild.moduleController + '/' + menuChild.moduleAction + '" title="' + menuChild.moduleName + '"><i class="' + menuChild.moduleIconClass + ' mx-3"></i></a>';
+                menustring += '<a class="link-secondary" href="/' + menuChild.moduleController + '/' + menuChild.moduleAction + '" title="' + menuChild.moduleName + '"><i class="' + menuChild.moduleIconClass + ' mx-2"></i></a>';
             });
         });
         $("#navbar1menu").html(menustring);
@@ -21,7 +21,7 @@
             else {
                 returnsocketurl = "ws://" + returnsocketurl;
             }
-            document.getElementById("wsconnectionUrl").innerHTML = returnsocketurl;
+            websocketUrl = returnsocketurl;
             connectSocket(returnsocketurl);
         }
     };
@@ -43,6 +43,7 @@ displayMenu = function (callback) {
         });
     }
 };
+var websocketUrl = "";
 var dataTablesSettings = {
     "decimal": "",
     "emptyTable": "<h1><span class='badge text-bg-secondary'>Empty Results</span></h1>",
@@ -119,7 +120,7 @@ function connectSocket(socketurl) {
             timerProgressBar: true,
         });
         Toast.fire({
-            title: '...',
+            title: 'Connecting',
             didOpen: () => {
                 Swal.showLoading();
                 timerInterval = setInterval(() => {
@@ -136,7 +137,7 @@ function connectSocket(socketurl) {
         })
             .then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer) {
-                    connectSocket(document.getElementById("wsconnectionUrl").innerHTML);
+                    connectSocket(websocketUrl);
                 }
             });
     };
